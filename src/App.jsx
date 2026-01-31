@@ -1,9 +1,9 @@
-import { Routes, Route } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import LoadingScreen from './components/LoadingScreen'
 import Navbar from './components/Navbar'
 
-// Lazy load heavy components for performance
+// Lazy load heavy components for better initial load performance
 const Landing = lazy(() => import('./pages/Landing'))
 const Story = lazy(() => import('./pages/Story'))
 const About = lazy(() => import('./pages/About'))

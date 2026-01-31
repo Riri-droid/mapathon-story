@@ -4,7 +4,7 @@
  * 7 chapters with strict scroll snapping - one scroll = one chapter
  */
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { gsap } from 'gsap'
 import MapController from '../components/MapController'
 import './Story.css'
@@ -135,8 +135,8 @@ const Story = () => {
   const sectionRefs = useRef([])
   const progressDotsRef = useRef([])
 
-  // Navigate to specific chapter with animation
-  const goToChapter = (targetIndex) => {
+  // Navigate to specific chapter with animation - wrapped in useCallback to fix dependency warnings
+  const goToChapter = useCallback((targetIndex) => {
     if (isAnimating.current) return
     if (targetIndex < 0 || targetIndex >= STORY_SECTIONS.length) return
     if (targetIndex === currentSection) return
@@ -220,7 +220,7 @@ const Story = () => {
         1.3
       )
     }
-  }
+  }, [currentSection]) // Dependencies for useCallback
 
   // Wheel event handler for chapter snapping
   useEffect(() => {
@@ -249,7 +249,7 @@ const Story = () => {
         container.removeEventListener('wheel', handleWheel)
       }
     }
-  }, [currentSection])
+  }, [currentSection, goToChapter]) // Include goToChapter in dependencies
 
   // Initialize first chapter
   useEffect(() => {

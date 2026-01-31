@@ -5,6 +5,16 @@
     <link rel="icon" type="image/svg+xml" href="/earth-icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Earth to India - Interactive Geospatial Storytelling Experience" />
+    <!-- Security: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://api.mapbox.com blob:; style-src 'self' 'unsafe-inline' https://api.mapbox.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.mapbox.com; connect-src 'self' https://*.mapbox.com https://events.mapbox.com; worker-src blob:;" />
+    <!-- Security: Prevent clickjacking -->
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <!-- Security: Prevent MIME sniffing -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <!-- Security: Referrer policy for privacy -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <!-- Privacy: Do Not Track signal -->
+    <meta name="robots" content="index, follow" />
     <title>Earth to India | Interactive Geospatial Storytelling</title>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com">

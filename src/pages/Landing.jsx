@@ -4,7 +4,7 @@
  * Mouse-reactive particles, terrain, and atmospheric effects
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
 import './Landing.css'

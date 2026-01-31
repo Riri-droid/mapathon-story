@@ -7,9 +7,15 @@ import { useEffect, useRef, useState, memo } from 'react'
 import mapboxgl from 'mapbox-gl'
 import './MapController.css'
 
-// Mapbox access token - replace with your own token
+// Mapbox access token - must be set via environment variable
 // Get one free at: https://account.mapbox.com/
-mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoibWFwYm94LWRlbW8iLCJhIjoiY2xvMnM5dGF2MDFsMjJrcXM4ZHJxNjQ0NSJ9.VPIxTg4B9TY_MQp6LGTSXw'
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
+
+if (!MAPBOX_TOKEN) {
+  console.error('VITE_MAPBOX_TOKEN environment variable is required. See .env.example for setup instructions.')
+}
+
+mapboxgl.accessToken = MAPBOX_TOKEN || ''
 
 const MapController = memo(({ 
   config, 

@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import './About.css'
@@ -17,13 +17,9 @@ const About = () => {
   const canvasRef = useRef(null)
   const cursorRef = useRef(null)
   const cursorDotRef = useRef(null)
-  const techCardsRef = useRef([])
-  const cardAnimationsRef = useRef([])
-  const cursorPosRef = useRef({ x: 0, y: 0, prevX: 0, prevY: 0 })
   
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
-  const [activeSection, setActiveSection] = useState(0)
 
   // Canvas particle effect - matching Landing page
   useEffect(() => {
