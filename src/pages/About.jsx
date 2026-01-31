@@ -17,6 +17,9 @@ const About = () => {
   const canvasRef = useRef(null)
   const cursorRef = useRef(null)
   const cursorDotRef = useRef(null)
+  const techCardsRef = useRef([])
+  const cardAnimationsRef = useRef([])
+  const cursorPosRef = useRef({ x: 0, y: 0, prevX: 0, prevY: 0 })
   
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
@@ -201,19 +204,8 @@ const About = () => {
       ease: 'power3.out'
     })
     
-    // Tech items - ensure visible
-    gsap.set('.tech-item', { opacity: 1, y: 0 })
-    gsap.from('.tech-item', {
-      scrollTrigger: {
-        trigger: '.tech-section',
-        start: 'top 90%'
-      },
-      opacity: 0,
-      y: 20,
-      duration: 0.4,
-      stagger: 0.05,
-      ease: 'power3.out'
-    })
+    // Tech cards - no scroll trigger needed for carousel
+    // Animation handled by CSS keyframes
 
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill())
@@ -243,7 +235,12 @@ const About = () => {
   ]
 
   const techStack = [
-    'Mapbox GL', 'React 18', 'GSAP', 'Three.js', 'GeoJSON', 'AI/ML', 'Vite', 'Node.js'
+    { name: 'Mapbox GL', category: 'Interactive Mapping' },
+    { name: 'React 18', category: 'User Interface' },
+    { name: 'GSAP', category: 'Animation Engine' },
+    { name: 'Vite', category: 'Build Tool' },
+    { name: 'GeoJSON', category: 'Spatial Data' },
+    { name: 'WebGL', category: '3D Rendering' }
   ]
 
   return (
@@ -370,27 +367,33 @@ const About = () => {
 
       {/* Tech Section */}
       <section className="tech-section">
-        <div className="section-header">
-          <span className="section-label">Technology</span>
-          <h2 className="section-title">Built With</h2>
+        <div className="tech-header">
+          <h2 className="tech-main-title">Build With</h2>
+          <p className="tech-subtitle">
+            Combining advanced geospatial technology with modern web architecture
+            to create immersive environmental storytelling.
+          </p>
         </div>
-        <div className="tech-grid">
-          {techStack.map((tech, i) => (
-            <div 
-              key={i} 
-              className="tech-item"
-              onMouseEnter={() => setIsHovering(true)}
-              onMouseLeave={() => setIsHovering(false)}
-            >
-              {tech}
-            </div>
-          ))}
+        <div className="tech-carousel">
+          <div className="tech-track">
+            {[...techStack, ...techStack, ...techStack].map((tech, i) => (
+              <div 
+                key={i} 
+                className="tech-card"
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+              >
+                <h3 className="tech-name">{tech.name}</h3>
+                <p className="tech-category">{tech.category}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section - Full Screen Centered */}
       <section className="cta-section">
-        <div className="cta-content">
+        <div className="cta-overlay">
           <h2 className="cta-title">Experience the Story</h2>
           <p className="cta-desc">
             Navigate through interactive maps, AI predictions, and data visualizations
@@ -405,11 +408,6 @@ const About = () => {
             <span>Launch Interactive Experience</span>
             <div className="btn-shine" />
           </Link>
-        </div>
-        <div className="cta-orbs">
-          <div className="orb orb-1" />
-          <div className="orb orb-2" />
-          <div className="orb orb-3" />
         </div>
       </section>
 

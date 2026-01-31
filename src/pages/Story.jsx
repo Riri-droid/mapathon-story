@@ -1,16 +1,13 @@
 /**
  * Story.jsx
  * Interactive scroll-driven story about the Aravalli Hills
- * 6 sections with map animations using GSAP ScrollTrigger + Mapbox GL
+ * 7 chapters with strict scroll snapping - one scroll = one chapter
  */
 
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import MapController from '../components/MapController'
 import './Story.css'
-
-gsap.registerPlugin(ScrollTrigger)
 
 // Story sections with Aravalli coordinates
 const STORY_SECTIONS = [
@@ -18,8 +15,8 @@ const STORY_SECTIONS = [
     id: 'india',
     title: 'India',
     heading: 'India',
-    subtitle: 'The Subcontinent',
-    description: 'From the Himalayas to the Indian Ocean, India\'s diverse landscape holds ancient secrets.',
+    subtitle: 'The Big Picture',
+    description: 'India sits between oceans and high mountains. Over millions of years, water and wind shaped this land into something complex and alive. The rivers that flow down from the north carry more than water. They carry soil, history, and the promise of harvest. Mountains do more than stand tall. They catch rain. They slow wind. They guide rivers and shape weather patterns in ways we rarely notice. Most of the country\'s green belt exists because something holds back the dry air from the west. Something keeps the desert from spreading east. There is an old range of hills that does this work quietly. Very few people know its name.',
     mapConfig: {
       center: [78.9629, 22.0], // India center (adjusted)
       zoom: 4.2,
@@ -32,9 +29,9 @@ const STORY_SECTIONS = [
   {
     id: 'aravalli',
     title: 'Aravalli Hills',
-    heading: 'The Aravalli Range',
-    subtitle: 'Ancient Mountains in Crisis',
-    description: 'Stretching 692 km across northwestern India, the Aravalli Range is one of the world\'s oldest mountain ranges. For 1.8 billion years, these hills have protected the land—but now they face collapse.',
+    heading: 'The Aravalli Hills',
+    subtitle: 'Ancient and Quiet',
+    description: 'The Aravalli Hills run for nearly seven hundred kilometers across northwestern India. They begin near the edge of Gujarat and stretch all the way up to Delhi. These hills are among the oldest mountain ranges on Earth. They have been standing for more than a billion years. They do not rise dramatically like the Himalayas. They do not announce themselves. People drive past them. Cities have grown around them. Life continues as if they are just part of the background. But they are not decoration. They are structure. They hold something in place.',
     mapConfig: {
       center: [73.7125, 26.0], // Aravalli center
       zoom: 6.5,
@@ -48,9 +45,9 @@ const STORY_SECTIONS = [
   {
     id: 'elevation',
     title: 'Elevation',
-    heading: 'Elevation Profile',
-    subtitle: 'The Peaks and Valleys',
-    description: 'The Aravalli Hills reach heights of up to 1,722 meters at Guru Shikhar peak. This 3D terrain visualization shows the dramatic elevation changes across the range.',
+    heading: 'Mountains You Don\'t Notice',
+    subtitle: 'Ordinary But Essential',
+    description: 'No one writes poems about the Aravallis. No one plans pilgrimages to their peaks. They are not famous. When people think of Indian mountains, they think of snow and altitude. The Aravallis are not that kind of mountain. They are the kind you see from a highway and forget about. The kind that exist in between things. The kind that feel ordinary. But ordinary things can be essential. A wall does not need to be beautiful to hold up a roof. The Aravallis have been holding something back for longer than we have had cities. We overlook them because they do their work without asking for recognition.',
     mapConfig: {
       center: [73.7125, 26.0], // Same as Aravalli view
       zoom: 6.5,
@@ -66,8 +63,8 @@ const STORY_SECTIONS = [
     id: 'ecology',
     title: 'Natural Barrier',
     heading: 'Stopping the Desert',
-    subtitle: 'Aravalli as Climate Shield',
-    description: 'For millions of years, the Aravalli Hills have acted as a critical natural barrier preventing the Thar Desert from spreading eastward. This green belt blocks hot desert winds, traps moisture, and protects fertile plains of northern India.',
+    subtitle: 'A Quiet Shield',
+    description: 'To the west of the Aravallis lies the Thar Desert. Dry wind moves across it constantly, carrying heat and sand. Without something in the way, that wind would keep moving east. It would dry the land. It would turn green fields into dust. The Aravallis stand in the path of this wind. They are not tall enough to stop it completely, but they slow it down. They break its force. This is why there are farms to the east of the hills. This is why rivers still flow. The hills act like a shield. Not a dramatic one. A quiet, old shield that no one remembers forging.',
     mapConfig: {
       center: [72.5, 26.5],
       zoom: 6.5,
@@ -81,9 +78,9 @@ const STORY_SECTIONS = [
   {
     id: 'destruction',
     title: 'Destruction',
-    heading: 'Mining & Deforestation',
-    subtitle: 'The Scars on the Land',
-    description: 'Decades of illegal mining for marble, granite, and limestone have devastated the Aravalli landscape. Over 31% of the forest cover has been lost since 1980.',
+    heading: 'What Is Going Wrong',
+    subtitle: 'Little by Little',
+    description: 'For decades, people have been taking stone from the Aravallis. There is marble and granite beneath the surface. Mining happens in small cuts at first. Then larger ones. Trees are cleared to reach the rock. Roads are built to carry it away. Each quarry feels small on its own. But the hills are not endless. When you take away rock, you take away the structure that holds water. When you remove trees, you remove the roots that keep soil in place. The shield is being chipped away. Not all at once. Not with intention to harm. But the effect is the same.',
     mapConfig: {
       center: [74.8, 26.5],
       zoom: 6.5,
@@ -97,9 +94,9 @@ const STORY_SECTIONS = [
   {
     id: 'desert-spread',
     title: 'Desert Expansion',
-    heading: 'The Advancing Thar',
-    subtitle: 'Desertification Simulation',
-    description: 'As the Aravalli barrier weakens, the Thar Desert is spreading eastward at an alarming rate. This simulation shows projected desert expansion over the next 50 years.',
+    heading: 'If Things Continue Like This',
+    subtitle: 'Slow Changes, Large Outcomes',
+    description: 'If the Aravallis continue to shrink, the land to their east will begin to change. Not tomorrow. Not in a single season. But slowly. The wind will carry more dust. The air will grow hotter. Rivers that depend on the hills to trap monsoon rains will carry less water each year. Fields will need more irrigation. Cities will face longer droughts. People will not connect the change to the hills at first. It will feel like bad luck. Like the weather has turned. But the weather has not turned. The structure that shaped the weather has been removed.',
     mapConfig: {
       center: [74.0, 27.0],
       zoom: 5.5,
@@ -112,9 +109,9 @@ const STORY_SECTIONS = [
   {
     id: 'future',
     title: 'AI Future Prediction',
-    heading: 'The Path Forward',
-    subtitle: 'Conservation or Collapse?',
-    description: 'AI models predict that without immediate conservation efforts, the Aravalli region could lose 60% of its remaining vegetation by 2070, turning Delhi into a dust bowl.',
+    heading: 'Two Possible Futures',
+    subtitle: 'What Comes Next',
+    description: 'There are two ways this story could unfold. In one version, the Aravallis are given space to recover. Mining is controlled. Trees are replanted. The shield holds. The green belt remains. In the other version, the hills are slowly erased. The quarries expand. The forest disappears. The wind moves east without resistance. The desert grows. Water becomes scarce. Both futures are still possible. The decision is not dramatic. It is quiet. It is made in permits and policies. Understanding that the hills matter is the first step. Everything else follows from there.',
     mapConfig: {
       center: [75.0, 26.5],
       zoom: 6.5,
@@ -133,68 +130,143 @@ const Story = () => {
   const [mapStyle, setMapStyle] = useState(STORY_SECTIONS[0].style)
   const [showTerrain, setShowTerrain] = useState(false)
   const [showAravalliHighlight, setShowAravalliHighlight] = useState(false)
+  const isAnimating = useRef(false)
   
   const sectionRefs = useRef([])
+  const progressDotsRef = useRef([])
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Create ScrollTrigger for each section
-      STORY_SECTIONS.forEach((section, index) => {
-        ScrollTrigger.create({
-          trigger: sectionRefs.current[index],
-          start: 'top center',
-          end: 'bottom center',
-          onEnter: () => {
-            console.log('Entering section:', index, section.id)
-            setCurrentSection(index)
-            setMapConfig(section.mapConfig)
-            setMapStyle(section.style)
-            setShowTerrain(section.terrain || false)
-            setShowAravalliHighlight(section.showAravalli || false)
-          },
-          onEnterBack: () => {
-            console.log('Entering back section:', index, section.id)
-            setCurrentSection(index)
-            setMapConfig(section.mapConfig)
-            setMapStyle(section.style)
-            setShowTerrain(section.terrain || false)
-            setShowAravalliHighlight(section.showAravalli || false)
-          },
+  // Navigate to specific chapter with animation
+  const goToChapter = (targetIndex) => {
+    if (isAnimating.current) return
+    if (targetIndex < 0 || targetIndex >= STORY_SECTIONS.length) return
+    if (targetIndex === currentSection) return
+
+    isAnimating.current = true
+    const section = STORY_SECTIONS[targetIndex]
+    const isMovingForward = targetIndex > currentSection
+
+    // Create master timeline for cinematic, slow transitions
+    const tl = gsap.timeline({
+      defaults: { ease: 'expo.inOut' },
+      onComplete: () => {
+        // Pause before unlocking to let user absorb the chapter
+        gsap.delayedCall(0.4, () => {
+          isAnimating.current = false
         })
+      }
+    })
 
-        // Animate section content
-        if (sectionRefs.current[index]) {
-          gsap.fromTo(
-            sectionRefs.current[index].querySelector('.section-content'),
-            { opacity: 0, y: 50 },
-            {
-              opacity: 1,
-              y: 0,
-              scrollTrigger: {
-                trigger: sectionRefs.current[index],
-                start: 'top 80%',
-                end: 'top 50%',
-                scrub: 1,
-              }
-            }
-          )
+    // Phase 1: Fade out current content slowly (0.7s)
+    const currentContent = sectionRefs.current[currentSection]?.querySelector('.section-content')
+    if (currentContent) {
+      tl.to(currentContent, {
+        opacity: 0,
+        y: isMovingForward ? -50 : 50,
+        scale: 0.92,
+        duration: 0.7,
+        ease: 'power3.in'
+      }, 0)
+    }
 
-          // Fade out as scrolling away
-          gsap.to(sectionRefs.current[index].querySelector('.section-content'), {
-            opacity: 0,
-            y: -50,
-            scrollTrigger: {
-              trigger: sectionRefs.current[index],
-              start: 'center 30%',
-              end: 'center top',
-              scrub: 1,
-            }
-          })
-        }
-      })
-    }, containerRef)
+    // Phase 2: Update React state and trigger map transition (at 0.2s - map moves first)
+    tl.add(() => {
+      setCurrentSection(targetIndex)
+      setMapConfig(section.mapConfig)
+      setMapStyle(section.style)
+      setShowTerrain(section.terrain || false)
+      setShowAravalliHighlight(section.showAravalli || false)
+    }, 0.2)
 
-    return () => ctx.revert()
+    // Phase 3: Fade in new content slowly (0.9s, starts at 1.1s - staggered after map)
+    const newContent = sectionRefs.current[targetIndex]?.querySelector('.section-content')
+    if (newContent) {
+      tl.fromTo(newContent,
+        {
+          opacity: 0,
+          y: isMovingForward ? 50 : -50,
+          scale: 0.92
+        },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.9,
+          ease: 'power3.out'
+        },
+        1.1
+      )
+    }
+
+    // Phase 4: Animate progress dots smoothly
+    const currentDot = progressDotsRef.current[currentSection]
+    const targetDot = progressDotsRef.current[targetIndex]
+    
+    if (currentDot) {
+      tl.to(currentDot, {
+        scale: 0.8,
+        duration: 0.6,
+        ease: 'power2.inOut'
+      }, 0)
+    }
+
+    if (targetDot) {
+      tl.fromTo(targetDot,
+        { scale: 0.8 },
+        { 
+          scale: 1.2,
+          duration: 0.7,
+          ease: 'elastic.out(1.2, 0.5)'
+        },
+        1.3
+      )
+    }
+  }
+
+  // Wheel event handler for chapter snapping
+  useEffect(() => {
+    const handleWheel = (e) => {
+      e.preventDefault()
+
+      if (isAnimating.current) return
+
+      // Determine direction
+      if (e.deltaY > 0) {
+        // Scroll down → next chapter
+        goToChapter(currentSection + 1)
+      } else if (e.deltaY < 0) {
+        // Scroll up → previous chapter
+        goToChapter(currentSection - 1)
+      }
+    }
+
+    const container = containerRef.current
+    if (container) {
+      container.addEventListener('wheel', handleWheel, { passive: false })
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('wheel', handleWheel)
+      }
+    }
+  }, [currentSection])
+
+  // Initialize first chapter
+  useEffect(() => {
+    const section = STORY_SECTIONS[0]
+    setMapConfig(section.mapConfig)
+    setMapStyle(section.style)
+    setShowTerrain(section.terrain || false)
+    setShowAravalliHighlight(section.showAravalli || false)
+
+    // Initial content animation
+    const firstContent = sectionRefs.current[0]?.querySelector('.section-content')
+    if (firstContent) {
+      gsap.fromTo(firstContent,
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.5 }
+      )
+    }
   }, [])
 
   return (
@@ -268,6 +340,7 @@ const Story = () => {
         {STORY_SECTIONS.map((section, index) => (
           <div
             key={section.id}
+            ref={(el) => (progressDotsRef.current[index] = el)}
             className={`progress-dot ${currentSection === index ? 'active' : ''} ${currentSection > index ? 'completed' : ''}`}
           />
         ))}

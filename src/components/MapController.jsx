@@ -49,6 +49,22 @@ const MapController = memo(({
     map.current.on('load', () => {
       setIsLoaded(true)
       
+      // Hide Mapbox default labels that may show desert/landform names
+      const labelsToHide = [
+        'natural-point-label',
+        'natural-line-label',
+        'natural-label',
+        'place-other',
+        'landform-label',
+        'place-label-other'
+      ]
+      
+      labelsToHide.forEach(layerId => {
+        if (map.current.getLayer(layerId)) {
+          map.current.setLayoutProperty(layerId, 'visibility', 'none')
+        }
+      })
+      
       // Add atmosphere for globe effect
       map.current.setFog({
         color: 'rgb(10, 10, 20)',
@@ -323,6 +339,21 @@ const MapController = memo(({
     if (!map.current || !isLoaded) return
 
     if (showDesertBarrier) {
+      // Add single point source for Thar Desert label (prevents duplicates)
+      if (!map.current.getSource('thar-desert-label-point')) {
+        map.current.addSource('thar-desert-label-point', {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            properties: { name: 'Thar Desert' },
+            geometry: {
+              type: 'Point',
+              coordinates: [70.0, 26.5] // Center of Thar Desert
+            }
+          }
+        })
+      }
+      
       // Add Thar Desert region (west of Aravalli)
       if (!map.current.getSource('thar-desert')) {
         map.current.addSource('thar-desert', {
@@ -333,23 +364,47 @@ const MapController = memo(({
             geometry: {
               type: 'Polygon',
               coordinates: [[
-                [68.0, 29.0],   // Northwest corner
-                [72.0, 29.0],   // Northeast - meets Aravalli
-                [72.0, 28.5],
-                [72.3, 27.8],
-                [72.5, 26.8],
-                [72.4, 25.8],
-                [72.3, 24.8],
-                [72.0, 24.0],   // Southeast - meets Aravalli
-                [69.5, 24.0],   // Southwest corner
-                [68.0, 25.0],
-                [68.0, 29.0]    // Close
+                // Top left, curving up to the peak
+                [68.8, 28.0],
+                [69.0, 28.5],
+                [69.5, 29.0],
+                [70.2, 29.3],
+                [71.0, 29.5],
+                [71.8, 29.4],
+                [72.3, 29.0],
+                // Eastern edge - following Aravalli with curves
+                [72.6, 28.5],
+                [72.8, 28.0],
+                [72.7, 27.5],
+                [72.5, 27.0],
+                [72.6, 26.5],
+                [72.8, 26.0],
+                [72.7, 25.5],
+                [72.5, 25.0],
+                [72.3, 24.5],
+                [72.0, 24.0],
+                [71.5, 23.5],
+                // Bottom point
+                [70.8, 23.0],
+                [70.0, 22.7],
+                [69.2, 22.8],
+                // Western edge - curved bulge
+                [68.5, 23.2],
+                [68.0, 23.8],
+                [67.5, 24.5],
+                [67.2, 25.3],
+                [67.0, 26.2],
+                [67.0, 27.0],
+                [67.2, 27.8],
+                [67.6, 28.3],
+                [68.2, 28.5],
+                [68.8, 28.0]
               ]]
             }
           }
         })
 
-        // Desert fill with sandy yellow
+        // Desert fill with gradient falloff effect
         map.current.addLayer({
           id: 'desert-fill',
           type: 'fill',
@@ -359,30 +414,62 @@ const MapController = memo(({
             'fill-opacity': 0.5
           }
         })
+        
+        // Inner desert fill for intensity (creates gradient effect)
+        map.current.addLayer({
+          id: 'desert-fill-inner',
+          type: 'fill',
+          source: 'thar-desert',
+          paint: {
+            'fill-color': '#EDC967',
+            'fill-opacity': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              5, 0.3,
+              8, 0.4
+            ],
+            'fill-translate': [-2, -2]
+          }
+        })
 
-        // Desert border
+        // Organic desert border with soft edges
         map.current.addLayer({
           id: 'desert-border',
           type: 'line',
           source: 'thar-desert',
           paint: {
             'line-color': '#D4A574',
-            'line-width': 3,
-            'line-opacity': 0.8
+            'line-width': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              5, 2,
+              8, 3.5
+            ],
+            'line-opacity': 0.7,
+            'line-blur': 2
           }
         })
 
-        // Desert label
+        // Desert label - SINGLE authoritative source
         map.current.addLayer({
           id: 'desert-label',
           type: 'symbol',
-          source: 'thar-desert',
+          source: 'thar-desert-label-point', // Use dedicated point source
+          filter: ['==', ['get', 'name'], 'Thar Desert'], // Hard filter
           layout: {
             'text-field': 'THAR DESERT',
             'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
             'text-size': 20,
             'text-transform': 'uppercase',
-            'text-letter-spacing': 0.3
+            'text-letter-spacing': 0.3,
+            'symbol-placement': 'point',
+            'text-allow-overlap': false,
+            'text-ignore-placement': false,
+            'icon-allow-overlap': false,
+            'text-max-width': 8,
+            'text-optional': false
           },
           paint: {
             'text-color': '#D4A574',
@@ -453,14 +540,14 @@ const MapController = memo(({
       }
 
       // Show all desert barrier layers
-      ['desert-fill', 'desert-border', 'desert-label', 'protected-fill', 'protected-label'].forEach(layerId => {
+      ['desert-fill', 'desert-fill-inner', 'desert-border', 'desert-label', 'protected-fill', 'protected-label'].forEach(layerId => {
         if (map.current.getLayer(layerId)) {
           map.current.setLayoutProperty(layerId, 'visibility', 'visible')
         }
       })
     } else {
       // Hide all desert barrier layers
-      ['desert-fill', 'desert-border', 'desert-label', 'protected-fill', 'protected-label'].forEach(layerId => {
+      ['desert-fill', 'desert-fill-inner', 'desert-border', 'desert-label', 'protected-fill', 'protected-label'].forEach(layerId => {
         if (map.current.getLayer(layerId)) {
           map.current.setLayoutProperty(layerId, 'visibility', 'none')
         }
@@ -729,12 +816,13 @@ const MapController = memo(({
         zoom: config.zoom,
         pitch: config.pitch || 0,
         bearing: config.bearing || 0,
-        duration: 2000,
+        duration: 2000, // Slow, cinematic camera movement
         essential: true,
         easing: (t) => {
-          return t < 0.5 
-            ? 4 * t * t * t 
-            : 1 - Math.pow(-2 * t + 2, 3) / 2
+          // expo.inOut equivalent for very smooth, calm motion
+          return t === 0 ? 0 : t === 1 ? 1 : t < 0.5
+            ? Math.pow(2, 20 * t - 10) / 2
+            : (2 - Math.pow(2, -20 * t + 10)) / 2
         }
       }
 

@@ -7,7 +7,9 @@
 .story {
   position: relative;
   width: 100%;
+  height: 100vh;
   background: #000;
+  overflow: hidden;
 }
 
 /* Fixed Map Background */
@@ -39,57 +41,71 @@
 .story-sections {
   position: relative;
   z-index: 10;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* Individual Story Section */
 .story-section {
-  min-height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  position: relative;
   padding-left: 5%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.story-section.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Section Content Card */
 .section-content {
-  max-width: 420px;
-  padding: 2rem 2rem;
+  max-width: 340px;
+  padding: 1.5rem 1.5rem;
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  will-change: opacity, transform;
 }
 
 .section-number {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #4ade80;
   letter-spacing: 0.2em;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   text-transform: uppercase;
 }
 
 .section-heading {
-  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 700;
   color: #fff;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
 
 .section-subtitle {
-  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
   font-weight: 300;
   color: #4ade80;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.75rem 0;
   letter-spacing: 0.02em;
 }
 
 .section-description {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 300;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.7;
@@ -114,15 +130,15 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
   border: 2px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
+  transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
   cursor: pointer;
+  will-change: transform;
 }
 
 .progress-dot.active {
   background: #4ade80;
   border-color: #4ade80;
   box-shadow: 0 0 20px rgba(74, 222, 128, 0.6);
-  transform: scale(1.3);
 }
 
 .progress-dot.completed {
